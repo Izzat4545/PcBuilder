@@ -49,7 +49,8 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
-blog/migrations/
+buildingBlocks/migrations
+
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
