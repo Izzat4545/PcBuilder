@@ -32,6 +32,7 @@ class CpuList(models.Model):
     socket = models.CharField(max_length=255)
     numberOfCores = models.IntegerField()
     price = models.IntegerField()
+    type = models.CharField(max_length=50, default="CPU", auto_created=True)
     created_at = models.DateTimeField(auto_now_add=True)
     brand = models.ForeignKey(BrandNamesList, related_name='cpulist_items', default=None, on_delete=models.CASCADE)
 
@@ -42,11 +43,10 @@ class Orders(models.Model):
     total_price = models.IntegerField(default=0, editable=False)
 
     def save(self, *args, **kwargs):
-        # Only calculate total_price if the order is being saved (i.e., not during creation)
         super().save(*args, **kwargs)
         self.total_price = self.calculate_total_price()
         super().save(update_fields=['total_price'])
-
+# will be changed in the future
     def calculate_total_price(self):
         total = 0
         for cpu in self.cpu.all():

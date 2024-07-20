@@ -32,6 +32,15 @@ class CpuListView(generics.ListCreateAPIView):
     queryset = CpuList.objects.all()
     serializer_class = CpuListSerializer
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        brand_id = self.request.query_params.get('brand_id', None)
+
+        if brand_id:
+            queryset = queryset.filter(brand=brand_id)
+
+        return queryset
+
 class CpuListDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = CpuList.objects.all()
     serializer_class = CpuListSerializer
