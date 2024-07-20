@@ -1,22 +1,24 @@
 from rest_framework import generics, response,status
-from .models import Components, Orders, BrandNamesList, CpuList
-from .serializers import ComponentsSerializer, OrdersSerializer, BrandNamesListSerializer, CpuListSerializer, ComponentSelectionSerializer
+from .models import  Orders, BrandNamesList, CpuList
+from .serializers import OrdersSerializer, BrandNamesListSerializer, CpuListSerializer, ComponentSelectionSerializer
 
-class ComponentsView(generics.ListCreateAPIView):
-    queryset = Components.objects.all()
-    serializer_class = ComponentsSerializer
 
-class ComponentsDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Components.objects.all()
-    serializer_class = ComponentsSerializer
-
-class OrdersView(generics.ListCreateAPIView):
+class OrdersView(generics.ListAPIView):
     queryset = Orders.objects.all()
     serializer_class = OrdersSerializer
 
 class OrdersDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Orders.objects.all()
     serializer_class = OrdersSerializer
+
+class CreateOrderView(generics.CreateAPIView):
+    queryset = Orders.objects.all()
+    serializer_class = OrdersSerializer
+
+    def create(self, request, *args, **kwargs):
+        order = Orders.objects.create()
+        return response.Response({'order_id': order.id}, status=status.HTTP_201_CREATED)
+
 
 class BrandNamesListView(generics.ListCreateAPIView):
     queryset = BrandNamesList.objects.all()
@@ -38,8 +40,13 @@ class SelectComponentsView(generics.CreateAPIView):
     serializer_class = ComponentSelectionSerializer
 
     def create(self, request, *args, **kwargs):
+        # Deserialize and validate input
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        components = serializer.save()
-        headers = self.get_success_headers(serializer.data)
-        return response.Response(ComponentsSerializer(components).data, status=status.HTTP_201_CREATED, headers=headers)
+        
+        # Save the order with updated components
+        order = serializer.save()
+        
+        # Return the updated order details
+        return response.Response(OrdersSerializer(order).data, status=status.HTTP_200_OK)
+

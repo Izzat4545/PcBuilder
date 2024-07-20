@@ -18,26 +18,6 @@ PC_COMPONENTS = (
     ("HEADSET", "HEADSET"),
 )
 
-class Components(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-    cpu = models.ForeignKey('CpuList', on_delete=models.SET_NULL, null=True, blank=True)
-    # Add other components similarly
-    total_price = models.IntegerField(default=0)
-
-    def save(self, *args, **kwargs):
-        self.total_price = self.calculate_total_price()
-        super().save(*args, **kwargs)
-
-    def calculate_total_price(self):
-        total = 0
-        if self.cpu:
-            total += self.cpu.price
-        return total
-
-class Orders(models.Model):
-    components = models.ManyToManyField(Components)
-    created_at = models.DateTimeField(auto_now_add=True)
-
 class BrandNamesList(models.Model):
     brandName = models.CharField(max_length=255)
     picture = models.ImageField(upload_to='cpu_pictures/', blank=True, default=None)
@@ -55,3 +35,26 @@ class CpuList(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     brand = models.ForeignKey(BrandNamesList, related_name='cpulist_items', default=None, on_delete=models.CASCADE)
 
+
+class Orders(models.Model):
+    cpu = models.ManyToManyField(CpuList, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    total_price = models.IntegerField(default=0, editable=False)
+
+    def save(self, *args, **kwargs):
+        # Only calculate total_price if the order is being saved (i.e., not during creation)
+        super().save(*args, **kwargs)
+        self.total_price = self.calculate_total_price()
+        super().save(update_fields=['total_price'])
+
+    def calculate_total_price(self):
+        total = 0
+        for cpu in self.cpu.all():
+            total += cpu.price
+        return total
+
+    def __str__(self):
+        return f"Order {self.id} Total Price {self.total_price}"
+
+    def __str__(self):
+        return f"Order {self.id} Total Price {self.total_price}"

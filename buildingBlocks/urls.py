@@ -7,9 +7,8 @@ from rest_framework_simplejwt.views import (
 
 urlpatterns = [
     path('orders',views.OrdersView.as_view()),
-    path('orders/<int:pk>',views.OrdersView.as_view()),
-    path('components',views.ComponentsView.as_view()),
-    path('components/<int:pk>',views.ComponentsDetailView.as_view()),
+    path('orders/create', views.CreateOrderView.as_view(), name='create-order'),
+    path('orders/<int:pk>',views.OrdersDetailView.as_view()),
     path('cpu',views.CpuListView.as_view()),
     path('cpu/<int:pk>',views.CpuListDetailView.as_view()),
     path('brand',views.BrandNamesListView.as_view()),
