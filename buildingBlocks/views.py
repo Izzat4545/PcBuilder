@@ -16,10 +16,9 @@ class CreateOrderView(generics.CreateAPIView):
     serializer_class = OrdersSerializer
 
     def create(self, request, *args, **kwargs):
-        order = Orders.objects.create()
+        order = Orders()
+        order.save()
         return response.Response({'order_id': order.id}, status=status.HTTP_201_CREATED)
-
-
 class BrandNamesListView(generics.ListCreateAPIView):
     queryset = BrandNamesList.objects.all()
     serializer_class = BrandNamesListSerializer
@@ -49,13 +48,8 @@ class SelectComponentsView(generics.CreateAPIView):
     serializer_class = ComponentSelectionSerializer
 
     def create(self, request, *args, **kwargs):
-        # Deserialize and validate input
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
-        # Save the order with updated components
         order = serializer.save()
-        
-        # Return the updated order details
         return response.Response(OrdersSerializer(order).data, status=status.HTTP_200_OK)
 

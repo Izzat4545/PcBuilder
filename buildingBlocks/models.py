@@ -28,6 +28,7 @@ class BrandNamesList(models.Model):
         return self.brandName
 
 class CpuList(models.Model):
+    total_amount = models.IntegerField(default=0)
     name = models.CharField(max_length=255)
     socket = models.CharField(max_length=255)
     numberOfCores = models.IntegerField()
@@ -36,25 +37,24 @@ class CpuList(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     brand = models.ForeignKey(BrandNamesList, related_name='cpulist_items', default=None, on_delete=models.CASCADE)
 
-
 class Orders(models.Model):
-    cpu = models.ManyToManyField(CpuList, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     total_price = models.IntegerField(default=0, editable=False)
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+        if not self.pk:
+            super().save(*args, **kwargs)
         self.total_price = self.calculate_total_price()
-        super().save(update_fields=['total_price'])
-# will be changed in the future
+        super().save(*args, **kwargs)
+
     def calculate_total_price(self):
-        total = 0
-        for cpu in self.cpu.all():
-            total += cpu.price
+        total = sum(item.cpu.price * item.amount for item in self.ordercpu_set.all())
         return total
 
     def __str__(self):
         return f"Order {self.id} Total Price {self.total_price}"
 
-    def __str__(self):
-        return f"Order {self.id} Total Price {self.total_price}"
+class OrderCpu(models.Model):
+    order = models.ForeignKey(Orders, on_delete=models.CASCADE)
+    cpu = models.ForeignKey(CpuList, on_delete=models.CASCADE)
+    amount = models.IntegerField(default=1)
