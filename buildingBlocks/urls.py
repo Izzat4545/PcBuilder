@@ -21,10 +21,11 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('docs', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('orders',views.OrderView.as_view(), name='orders'),
     path('orders/<int:pk>',views.OrderEdit.as_view(), name='orders-edit'),
     path('orders/create', views.OrderAdd.as_view(), name='create-order'),
+    path('orders/components/<int:pk>', views.OrderItemEdit.as_view(), name='order-item-update'),
     path('orders/order',views.OrderItemsCreate.as_view(), name='order-items-create'),
     path('cpu',views.CpuView.as_view(), name='cpu'),
     path('cpu/<int:pk>',views.CpuViewEdit.as_view(), name='cpu-detail'),

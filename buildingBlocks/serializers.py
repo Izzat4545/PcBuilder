@@ -1,5 +1,9 @@
 from rest_framework import serializers
 from .models import *
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class CpuSerializer(serializers.ModelSerializer):
     brand = serializers.PrimaryKeyRelatedField(queryset=BrandNamesList.objects.filter(type="cpu"))
@@ -78,37 +82,37 @@ class PostOrderItemsSerializer(serializers.ModelSerializer):
         fields = ['id', 'quantity', 'products', 'orders']
     
 class GetOrderItemsSerializer(serializers.ModelSerializer):
-        product = serializers.SerializerMethodField()
-        subtotal_price = serializers.SerializerMethodField()
+    product = serializers.SerializerMethodField()
+    subtotal_price = serializers.SerializerMethodField()
     
-        class Meta:
-            model = OrderItems
-            fields = ['id', 'quantity', 'subtotal_price', 'product', ]
+    class Meta:
+        model = OrderItems
+        fields = ['id', 'quantity', 'subtotal_price', 'product']
 
-        def get_product(self, obj):
-            product = obj.products
-            product_type = product.type.lower()
-            serializer = self.get_serializer_for_type(product_type)
-            return serializer(product).data
-        
-        def get_serializer_for_type(self, product_type):
-            serializers_map = {
-                'cpu': CpuSerializer,
-                'gpu': GpuSerializer,
-                'os': OsSerializer,
-                'wifi': WifiSerializer,
-                'case': CaseSerializer,
-                'cooler': CoolerSerializer,
-                'motherboard': MotherboardSerializer,
-                'ssd': SsdSerializer,
-                'hdd': HddSerializer,
-                'ram': RamSerializer,
-                'psu': PsuSerializer
-            }
-            return serializers_map.get(product_type, ProductSerializer)
-        
-        def get_subtotal_price(self, obj):
-            return obj.quantity * obj.products.price
+    def get_product(self, obj):
+        product = obj.products
+        product_type = product.type.lower()
+        serializer = self.get_serializer_for_type(product_type)
+        return serializer(product).data
+
+    def get_serializer_for_type(self, product_type):
+        serializers_map = {
+            'cpu': CpuSerializer,
+            'gpu': GpuSerializer,
+            'os': OsSerializer,
+            'wifi': WifiSerializer,
+            'case': CaseSerializer,
+            'cooler': CoolerSerializer,
+            'motherboard': MotherboardSerializer,
+            'ssd': SsdSerializer,
+            'hdd': HddSerializer,
+            'ram': RamSerializer,
+            'psu': PsuSerializer
+        }
+        return serializers_map.get(product_type, ProductSerializer)
+
+    def get_subtotal_price(self, obj):
+        return obj.quantity * obj.products.price
 class GetOrderSerializer(serializers.ModelSerializer):
     components = GetOrderItemsSerializer(many=True)
     total_price = serializers.SerializerMethodField()

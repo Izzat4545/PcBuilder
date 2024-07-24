@@ -57,3 +57,19 @@ class BrandNamesListView(generics.ListCreateAPIView):
 class BrandNamesDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = BrandNamesList.objects.all()
     serializer_class = BrandNamesListSerializer
+
+class OrderItemEdit(generics.RetrieveUpdateDestroyAPIView):
+    queryset = OrderItems.objects.all()
+    serializer_class = GetOrderItemsSerializer
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        data = request.data
+
+        quantity = data.get('quantity')
+        if quantity is not None:
+            instance.quantity = quantity
+
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return response.Response(serializer.data, status=status.HTTP_200_OK)
