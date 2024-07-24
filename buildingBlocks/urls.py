@@ -22,14 +22,16 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('orders',views.OrdersView.as_view(), name='orders'),
-    path('orders/create', views.CreateOrderView.as_view(), name='create-order'),
-    path('orders/<int:pk>',views.OrdersDetailView.as_view(), name='order-detail'),
-    path('cpu',views.CpuListView.as_view(), name='cpu'),
-    path('cpu/<int:pk>',views.CpuListDetailView.as_view(), name='cpu-detail'),
+    path('orders',views.OrderView.as_view(), name='orders'),
+    path('orders/<int:pk>',views.OrderEdit.as_view(), name='orders-edit'),
+    path('orders/create', views.OrderAdd.as_view(), name='create-order'),
+    path('orders/order',views.OrderItemsCreate.as_view(), name='order-items-create'),
+    path('cpu',views.CpuView.as_view(), name='cpu'),
+    path('cpu/<int:pk>',views.CpuViewEdit.as_view(), name='cpu-detail'),
+    path('gpu',views.GpuView.as_view(), name='gpu'),
+    path('gpu/<int:pk>',views.GpuViewEdit.as_view(), name='gpu-detail'),
     path('brand',views.BrandNamesListView.as_view(), name='brand'),
     path('brand/<int:pk>',views.BrandNamesDetailView.as_view(), name='brand-detail'),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('select-parts/', views.SelectComponentsView.as_view(), name='select-components'),
 ]

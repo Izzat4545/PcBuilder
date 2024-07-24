@@ -1,60 +1,86 @@
 from django.db import models
 
 PC_COMPONENTS = (
-    ("CPU", "CPU"),
-    ("GPU", "GPU"),
-    ("RAM", "RAM"),
-    ("MOTHERBOARD", "MOTHERBOARD"),
-    ("OS", "OS"),
-    ("WIFI", "WIFI"),
-    ("CASE", "CASE"),
-    ("COOLER", "COOLER"),
-    ("SSD", "SSD"),
-    ("HDD", "HDD"),
-    ("POWERSUPPLY", "POWERSUPPLY"),
-    ("MOUSE", "MOUSE"),
-    ("MONITOR", "MONITOR"),
-    ("KEYBOARD", "KEYBOARD"),
-    ("HEADSET", "HEADSET"),
+    ("cpu", "CPU"),
+    ("gpu", "GPU"),
+    ("psu", "Psu"),
+    ("ram", "RAM"),
+    ("motherboard", "MOTHERBOARD"),
+    ("os", "OS"),
+    ("wifi", "WIFI"),
+    ("case", "CASE"),
+    ("cooler", "COOLER"),
+    ("ssd", "SSD"),
+    ("hdd", "HDD"),
+    ("mouse", "MOUSE"),
+    ("monitor", "MONITOR"),
+    ("keyboard", "KEYBOARD"),
+    ("headset", "HEADSET"),
 )
-
 class BrandNamesList(models.Model):
     brandName = models.CharField(max_length=255)
-    picture = models.ImageField(upload_to='cpu_pictures/', blank=True, default=None)
+    picture = models.ImageField(upload_to='brand/', blank=True, default=None)
     type = models.CharField(default="Please choose", choices=PC_COMPONENTS, max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.brandName
 
-class CpuList(models.Model):
-    total_amount = models.IntegerField(default=0)
+class Products(models.Model):
+    total_amount = models.IntegerField(default=1)
     name = models.CharField(max_length=255)
     socket = models.CharField(max_length=255)
-    numberOfCores = models.IntegerField()
-    price = models.IntegerField()
-    type = models.CharField(max_length=50, default="CPU", auto_created=True)
+    numberOfCores = models.IntegerField(null=True, blank=True)
+    price = models.IntegerField(default=0)
+    type = models.CharField(default="Please choose", choices=PC_COMPONENTS, max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
-    brand = models.ForeignKey(BrandNamesList, related_name='cpulist_items', default=None, on_delete=models.CASCADE)
-
-class Orders(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-    total_price = models.IntegerField(default=0, editable=False)
-
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            super().save(*args, **kwargs)
-        self.total_price = self.calculate_total_price()
-        super().save(*args, **kwargs)
-
-    def calculate_total_price(self):
-        total = sum(item.cpu.price * item.amount for item in self.ordercpu_set.all())
-        return total
+    picture_cpu = models.ImageField(upload_to='cpu/', blank=True, default=None)
+    brand = models.ForeignKey(BrandNamesList, default=None, on_delete=models.PROTECT)
+    wirelessStandart = models.CharField(max_length=50, blank=True, null=True)
+    numberOfAntennas = models.IntegerField(blank=True, null=True)
+    security = models.CharField(max_length=50, blank=True, null=True)
+    picture_wifi = models.ImageField(upload_to='wifi/', blank=True, default=None)
+    formFactor = models.CharField(max_length=50, blank=True, null=True)
+    videCardLength = models.CharField(max_length=50, blank=True, null=True)
+    picture_case = models.ImageField(upload_to='cases/', blank=True, default=None)
+    radiatorMaterial = models.CharField(max_length=50, blank=True, null=True)
+    rotationalSpeed = models.IntegerField(blank=True, null=True)
+    noiseLevel = models.CharField(max_length=50, blank=True, null=True)
+    picture_cooler = models.ImageField(upload_to='cooler/', blank=True, default=None)
+    chipset = models.CharField(max_length=50, blank=True, null=True)
+    picture_motherboard = models.ImageField(upload_to='motherboard/', blank=True, default=None)
+    coreClock = models.CharField(max_length=50, blank=True, null=True)
+    boostClock = models.CharField(max_length=50, blank=True, null=True)
+    picture_gpu = models.ImageField(upload_to='gpu/', blank=True, default=None)
+    readSpeed = models.CharField(max_length=50, blank=True, null=True)
+    writespeed = models.CharField(max_length=50, blank=True, null=True)
+    picture_ssd = models.ImageField(upload_to='ssd/', blank=True, default=None)
+    speed = models.CharField(max_length=50, blank=True, null=True)
+    picture_ram = models.ImageField(upload_to='ram/', blank=True, default=None)
+    picture_hdd = models.ImageField(upload_to='hdd/', blank=True, default=None)
+    wattage = models.CharField(max_length=50, blank=True, null=True)
+    picture_psu = models.ImageField(upload_to='psu/', blank=True, default=None)
+    dpi = models.CharField(max_length=50, blank=True, null=True)
+    picture_mouse = models.ImageField(upload_to='mouse/', blank=True, default=None)
+    size = models.CharField(max_length=50, blank=True, null=True)
+    resolution = models.CharField(max_length=50, blank=True, null=True)
+    refreshRate = models.CharField(max_length=50, blank=True, null=True)
+    picture_monitor = models.ImageField(upload_to='monitor/', blank=True, default=None)
+    switches = models.CharField(max_length=50, blank=True, null=True)
+    picture_keyboard = models.ImageField(upload_to='keyboard/', blank=True, default=None)
+    connectionInterface = models.CharField(max_length=50, blank=True, null=True)
+    picture_headset = models.ImageField(upload_to='headset/', blank=True, default=None)
 
     def __str__(self):
-        return f"Order {self.id} Total Price {self.total_price}"
+        return "{}".format(self.name)
+class Orders(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
 
-class OrderCpu(models.Model):
-    order = models.ForeignKey(Orders, on_delete=models.CASCADE)
-    cpu = models.ForeignKey(CpuList, on_delete=models.CASCADE)
-    amount = models.IntegerField(default=1)
+    def __str__(self):
+        return "{}".format(self.id)
+    
+class OrderItems(models.Model):
+    orders = models.ForeignKey(Orders, on_delete=models.CASCADE, related_name="components", null=True, blank=True)
+    products = models.ForeignKey(Products, on_delete=models.PROTECT, related_name="orderItems", null=True, blank=True)
+    quantity = models.IntegerField(default=1)
+
