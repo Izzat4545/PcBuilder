@@ -79,10 +79,11 @@ class PostOrderItemsSerializer(serializers.ModelSerializer):
     
 class GetOrderItemsSerializer(serializers.ModelSerializer):
         product = serializers.SerializerMethodField()
+        subtotal_price = serializers.SerializerMethodField()
     
         class Meta:
             model = OrderItems
-            fields = ['id', 'quantity', 'product']
+            fields = ['id', 'quantity', 'subtotal_price', 'product', ]
 
         def get_product(self, obj):
             product = obj.products
@@ -91,34 +92,35 @@ class GetOrderItemsSerializer(serializers.ModelSerializer):
             return serializer(product).data
         
         def get_serializer_for_type(self, product_type):
-                if product_type == 'cpu':
-                    return CpuSerializer
-                elif product_type == 'gpu':
-                    return GpuSerializer
-                elif product_type == 'os':
-                    return OsSerializer
-                elif product_type == 'wifi':
-                    return WifiSerializer
-                elif product_type == 'case':
-                    return CaseSerializer
-                elif product_type == 'cooler':
-                    return CoolerSerializer
-                elif product_type == 'motherboard':
-                    return MotherboardSerializer
-                elif product_type == 'ssd':
-                    return SsdSerializer
-                elif product_type == 'hdd':
-                    return HddSerializer
-                elif product_type == 'ram':
-                    return RamSerializer
-                elif product_type == 'psu':
-                    return PsuSerializer
-                return ProductSerializer
+            serializers_map = {
+                'cpu': CpuSerializer,
+                'gpu': GpuSerializer,
+                'os': OsSerializer,
+                'wifi': WifiSerializer,
+                'case': CaseSerializer,
+                'cooler': CoolerSerializer,
+                'motherboard': MotherboardSerializer,
+                'ssd': SsdSerializer,
+                'hdd': HddSerializer,
+                'ram': RamSerializer,
+                'psu': PsuSerializer
+            }
+            return serializers_map.get(product_type, ProductSerializer)
+        
+        def get_subtotal_price(self, obj):
+            return obj.quantity * obj.products.price
 class GetOrderSerializer(serializers.ModelSerializer):
     components = GetOrderItemsSerializer(many=True)
+    total_price = serializers.SerializerMethodField()
     class Meta:
         model = Orders
-        fields = ["id", "components"]
+        fields = ["id", "total_price", "components"]
+
+    def get_total_price(self, obj):
+        total = 0
+        for item in obj.components.all():
+            total += item.quantity * item.products.price
+        return total
 
 class PostOrderSerializer(serializers.ModelSerializer):
     class Meta:
@@ -128,4 +130,3 @@ class BrandNamesListSerializer(serializers.ModelSerializer):
     class Meta:
         model = BrandNamesList
         fields = "__all__"
-
