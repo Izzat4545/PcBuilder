@@ -1,11 +1,14 @@
-from rest_framework import generics, response,status
+from rest_framework import generics, response,status,permissions
 from .models import  *
 from .serializers import *
+from .customPermission import IsAdminOrReadOnly
 from rest_framework.exceptions import ValidationError
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 class CpuView(generics.ListCreateAPIView):
     serializer_class = CpuSerializer
-
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
     def get_queryset(self):
         brand = self.request.query_params.get('brand')
         if brand:
@@ -16,11 +19,15 @@ class CpuView(generics.ListCreateAPIView):
         serializer.save(type='cpu')
 
 class CpuViewEdit(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Products.objects.all()
+    queryset = Products.objects.filter(type='cpu')
     serializer_class = CpuSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
 
 class GpuView(generics.ListCreateAPIView):
     serializer_class = GpuSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
 
     def get_queryset(self):
         brand = self.request.query_params.get('brand')
@@ -31,9 +38,15 @@ class GpuView(generics.ListCreateAPIView):
         
     def perform_create(self, serializer):
         serializer.save(type='gpu')
-
+class GpuViewEdit(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Products.objects.filter(type='gpu')
+    serializer_class = GpuSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
 class MotherboardView(generics.ListCreateAPIView):
     serializer_class = MotherboardSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
 
     def get_queryset(self):
         brand = self.request.query_params.get('brand')
@@ -48,10 +61,8 @@ class MotherboardView(generics.ListCreateAPIView):
 class MotherboardEdit(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = MotherboardSerializer
     queryset = Products.objects.filter(type='motherboard')
-
-class GpuViewEdit(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Products.objects.filter(type='gpu')
-    serializer_class = GpuSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
 
 
 class OrderAdd(generics.CreateAPIView):
@@ -65,6 +76,18 @@ class OrderView(generics.ListAPIView):
 class OrderEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = Orders.objects.all()
     serializer_class = GetOrderSerializer
+
+class BrandNamesListView(generics.ListCreateAPIView):
+    queryset = BrandNamesList.objects.all()
+    serializer_class = BrandNamesListSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+
+class BrandNamesDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = BrandNamesList.objects.all()
+    serializer_class = BrandNamesListSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
 
 class OrderItemsCreate(generics.CreateAPIView):
     queryset = OrderItems.objects.all()
@@ -86,14 +109,6 @@ class OrderItemsCreate(generics.CreateAPIView):
                 raise ValidationError('Selected motherboard is not compatible with the existing CPU in the order.')
 
         serializer.save()
-class BrandNamesListView(generics.ListCreateAPIView):
-    queryset = BrandNamesList.objects.all()
-    serializer_class = BrandNamesListSerializer
-
-class BrandNamesDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = BrandNamesList.objects.all()
-    serializer_class = BrandNamesListSerializer
-
 class OrderItemEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = OrderItems.objects.all()
     serializer_class = GetOrderItemsSerializer
