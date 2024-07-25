@@ -64,6 +64,26 @@ class MotherboardEdit(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
 
+class OsView(generics.ListCreateAPIView):
+    serializer_class = OsSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+
+    def get_queryset(self):
+        brand = self.request.query_params.get('brand')
+        if brand:
+            return Products.objects.filter(brand=brand, type='os')
+        else:
+            return Products.objects.filter(type='os')
+        
+    def perform_create(self, serializer):
+        serializer.save(type='os')
+
+class OsEdit(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = OsSerializer
+    queryset = Products.objects.filter(type='os')
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
 
 class OrderAdd(generics.CreateAPIView):
     queryset = Orders.objects.all()

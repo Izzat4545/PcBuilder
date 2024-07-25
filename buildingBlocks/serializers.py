@@ -26,7 +26,8 @@ class OsSerializer(serializers.ModelSerializer):
     })
     class Meta:
         model = Products
-        fields = ["id", "name", "total_amount", "socket", "price" "brand", "type"]
+        fields = ["id", "name", "total_amount", "socket", "price", "brand", "type"]
+        read_only_fields = ["type"]
 
 class WifiSerializer(serializers.ModelSerializer):
     brand = serializers.PrimaryKeyRelatedField(queryset=BrandNamesList.objects.filter(type="wifi"))
