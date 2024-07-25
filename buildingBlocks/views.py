@@ -1,7 +1,7 @@
 from rest_framework import generics, response,status
 from .models import  *
 from .serializers import *
-
+from rest_framework.exceptions import ValidationError
 
 class CpuView(generics.ListCreateAPIView):
     serializer_class = CpuSerializer
@@ -32,6 +32,23 @@ class GpuView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(type='gpu')
 
+class MotherboardView(generics.ListCreateAPIView):
+    serializer_class = MotherboardSerializer
+
+    def get_queryset(self):
+        brand = self.request.query_params.get('brand')
+        if brand:
+            return Products.objects.filter(brand=brand, type='motherboard')
+        else:
+            return Products.objects.filter(type='motherboard')
+        
+    def perform_create(self, serializer):
+        serializer.save(type='motherboard')
+
+class MotherboardEdit(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = MotherboardSerializer
+    queryset = Products.objects.filter(type='motherboard')
+
 class GpuViewEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = Products.objects.filter(type='gpu')
     serializer_class = GpuSerializer
@@ -52,6 +69,23 @@ class OrderEdit(generics.RetrieveUpdateDestroyAPIView):
 class OrderItemsCreate(generics.CreateAPIView):
     queryset = OrderItems.objects.all()
     serializer_class = PostOrderItemsSerializer
+
+    def perform_create(self, serializer):
+        product = serializer.validated_data['products']
+        order = serializer.validated_data['orders']
+        
+        if product.type == 'cpu':
+            # Check if the order already has a motherboard
+            existing_motherboard = OrderItems.objects.filter(orders=order, products__type='motherboard').first()
+            if existing_motherboard and existing_motherboard.products.socket != product.socket:
+                raise ValidationError('Selected CPU is not compatible with the existing motherboard in the order.')
+
+        if product.type == 'motherboard':
+            existing_cpu = OrderItems.objects.filter(orders=order, products__type='cpu').first()
+            if existing_cpu and existing_cpu.products.socket != product.socket:
+                raise ValidationError('Selected motherboard is not compatible with the existing CPU in the order.')
+
+        serializer.save()
 class BrandNamesListView(generics.ListCreateAPIView):
     queryset = BrandNamesList.objects.all()
     serializer_class = BrandNamesListSerializer

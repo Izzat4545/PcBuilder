@@ -1,26 +1,10 @@
 from django.db import models
+from .config import product_config
 
-PC_COMPONENTS = (
-    ("cpu", "CPU"),
-    ("gpu", "GPU"),
-    ("psu", "Psu"),
-    ("ram", "RAM"),
-    ("motherboard", "MOTHERBOARD"),
-    ("os", "OS"),
-    ("wifi", "WIFI"),
-    ("case", "CASE"),
-    ("cooler", "COOLER"),
-    ("ssd", "SSD"),
-    ("hdd", "HDD"),
-    ("mouse", "MOUSE"),
-    ("monitor", "MONITOR"),
-    ("keyboard", "KEYBOARD"),
-    ("headset", "HEADSET"),
-)
 class BrandNamesList(models.Model):
     brandName = models.CharField(max_length=255)
     picture = models.ImageField(upload_to='brand/', blank=True, default=None)
-    type = models.CharField(default="Please choose", choices=PC_COMPONENTS, max_length=100)
+    type = models.CharField(default="Please choose", choices=product_config.PC_COMPONENTS, max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -32,7 +16,7 @@ class Products(models.Model):
     socket = models.CharField(max_length=255)
     numberOfCores = models.IntegerField(null=True, blank=True)
     price = models.IntegerField(default=0)
-    type = models.CharField(default="Please choose", choices=PC_COMPONENTS, max_length=100)
+    type = models.CharField(default="Please choose", choices=product_config.PC_COMPONENTS, max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     picture_cpu = models.ImageField(upload_to='cpu/', blank=True, default=None)
     brand = models.ForeignKey(BrandNamesList, default=None, on_delete=models.PROTECT)
