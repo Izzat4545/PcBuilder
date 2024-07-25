@@ -135,6 +135,10 @@ class PostOrderItemsSerializer(serializers.ModelSerializer):
         fields = ['id', 'quantity', 'products', 'orders']
 
     def validate_quantity(self, value):
+        if value <= 0:
+            raise serializers.ValidationError(
+                f"The maximum quantity allowed for {type_name.upper()} is {QUANTITY_LIMITS[type_name]}."
+            )
         product = self.instance.products if self.instance else Products.objects.get(id=self.initial_data['products'])
         type_name = product.type.lower()
         

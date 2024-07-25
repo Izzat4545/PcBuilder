@@ -102,10 +102,23 @@ class OrderItemEdit(generics.RetrieveUpdateDestroyAPIView):
         instance = self.get_object()
         data = request.data
 
-        quantity = data.get('quantity')
+        quantity = int(data.get('quantity'))
         if quantity is not None:
+            # Validate for non-negative and non-zero values
+            if quantity <= 0:
+                raise ValidationError("Quantity must be greater than zero.")
+            
+            # Get product type to check quantity limits
+            product = instance.products
+            type_name = product.type.lower()
+            
+            # Validate against quantity limits from config
+            if type_name in QUANTITY_LIMITS and quantity > QUANTITY_LIMITS[type_name]:
+                raise ValidationError(f"The maximum quantity allowed for {type_name.upper()} is {QUANTITY_LIMITS[type_name]}.")
+            
+            # Set the new quantity
             instance.quantity = quantity
+            instance.save()
 
-        instance.save()
         serializer = self.get_serializer(instance)
         return response.Response(serializer.data, status=status.HTTP_200_OK)
