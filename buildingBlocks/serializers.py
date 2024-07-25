@@ -10,6 +10,7 @@ class CpuSerializer(serializers.ModelSerializer):
     class Meta:
         model = Products
         fields = ["id", "total_amount", "name", "socket", "numberOfCores", "price", "brand", "picture_cpu", "type"]
+        read_only_fields = ["type"]
 
 class OsSerializer(serializers.ModelSerializer):
     brand = serializers.PrimaryKeyRelatedField(queryset=BrandNamesList.objects.filter(type="os"))

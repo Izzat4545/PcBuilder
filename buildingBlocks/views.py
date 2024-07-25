@@ -12,6 +12,8 @@ class CpuView(generics.ListCreateAPIView):
             return Products.objects.filter(brand=brand, type='cpu')
         else:
             return Products.objects.filter(type='cpu')
+    def perform_create(self, serializer):
+        serializer.save(type='cpu')
 
 class CpuViewEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = Products.objects.all()
