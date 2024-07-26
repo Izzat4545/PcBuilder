@@ -4,11 +4,13 @@ from .serializers import *
 from .customPermission import IsAdminOrReadOnly
 from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.parsers import FormParser, MultiPartParser
 
 class CpuView(generics.ListCreateAPIView):
     serializer_class = CpuSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
     def get_queryset(self):
         brand = self.request.query_params.get('brand')
         if brand:
@@ -23,11 +25,13 @@ class CpuViewEdit(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CpuSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
 class GpuView(generics.ListCreateAPIView):
     serializer_class = GpuSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
     def get_queryset(self):
         brand = self.request.query_params.get('brand')
@@ -43,10 +47,12 @@ class GpuViewEdit(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = GpuSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 class MotherboardView(generics.ListCreateAPIView):
     serializer_class = MotherboardSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
     def get_queryset(self):
         brand = self.request.query_params.get('brand')
@@ -63,11 +69,13 @@ class MotherboardEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = Products.objects.filter(type='motherboard')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
 class OsView(generics.ListCreateAPIView):
     serializer_class = OsSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
     def get_queryset(self):
         brand = self.request.query_params.get('brand')
@@ -84,11 +92,13 @@ class OsEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = Products.objects.filter(type='os')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
 class WifiView(generics.ListCreateAPIView):
     serializer_class = WifiSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
     def get_queryset(self):
         brand = self.request.query_params.get('wifi')
@@ -105,11 +115,13 @@ class WifiEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = Products.objects.filter(type='wifi')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
 class CaseView(generics.ListCreateAPIView):
     serializer_class = CaseSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
     def get_queryset(self):
         brand = self.request.query_params.get('case')
@@ -126,11 +138,13 @@ class CaseEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = Products.objects.filter(type='case')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
 class CoolerView(generics.ListCreateAPIView):
     serializer_class = CoolerSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
     def get_queryset(self):
         brand = self.request.query_params.get('cooler')
@@ -147,11 +161,13 @@ class CoolerEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = Products.objects.filter(type='cooler')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
 class SsdView(generics.ListCreateAPIView):
     serializer_class = SsdSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
     def get_queryset(self):
         brand = self.request.query_params.get('ssd')
@@ -168,11 +184,13 @@ class SsdEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = Products.objects.filter(type='ssd')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
 class HddView(generics.ListCreateAPIView):
     serializer_class = HddSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
     def get_queryset(self):
         brand = self.request.query_params.get('hdd')
@@ -189,11 +207,13 @@ class HddEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = Products.objects.filter(type='hdd')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
 class RamView(generics.ListCreateAPIView):
     serializer_class = RamSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
     def get_queryset(self):
         brand = self.request.query_params.get('ram')
@@ -210,11 +230,13 @@ class RamEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = Products.objects.filter(type='ram')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
 class PsuView(generics.ListCreateAPIView):
     serializer_class = PsuSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
     def get_queryset(self):
         brand = self.request.query_params.get('psu')
@@ -231,11 +253,13 @@ class PsuEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = Products.objects.filter(type='psu')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
 class MouseView(generics.ListCreateAPIView):
     serializer_class = MouseSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
     def get_queryset(self):
         brand = self.request.query_params.get('mouse')
@@ -252,11 +276,13 @@ class MouseEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = Products.objects.filter(type='mouse')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
 class MonitorView(generics.ListCreateAPIView):
     serializer_class = MonitorSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
     def get_queryset(self):
         brand = self.request.query_params.get('monitor')
@@ -273,10 +299,12 @@ class MonitorEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = Products.objects.filter(type='monitor')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 class KeyboardView(generics.ListCreateAPIView):
     serializer_class = KeyboardSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
     def get_queryset(self):
         brand = self.request.query_params.get('keyboard')
@@ -293,11 +321,13 @@ class KeyboardEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = Products.objects.filter(type='keyboard')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
 class HeadsetView(generics.ListCreateAPIView):
     serializer_class = HeadsetSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 
     def get_queryset(self):
         brand = self.request.query_params.get('headset')
@@ -314,6 +344,7 @@ class HeadsetEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = Products.objects.filter(type='headset')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+    parser_classes = [FormParser, MultiPartParser]
 class OrderAdd(generics.CreateAPIView):
     queryset = Orders.objects.all()
     serializer_class = PostOrderSerializer
