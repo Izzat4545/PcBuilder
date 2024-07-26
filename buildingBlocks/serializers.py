@@ -37,8 +37,8 @@ class WifiSerializer(serializers.ModelSerializer):
     })
     class Meta:
         model = Products
-        fields = ["id", "name", "total_amount", "socket", "wirelessStandart", "picture_wifi" "price", "numberOfAntennas", "security", "brand", "type"]
-
+        fields = ["id", "name", "total_amount", "socket", "wirelessStandart", "picture_wifi", "price", "numberOfAntennas", "security", "brand", "type"]
+        read_only_fields = ["type"]
 class CaseSerializer(serializers.ModelSerializer):
     brand = serializers.PrimaryKeyRelatedField(queryset=BrandNamesList.objects.filter(type="case"))
     name = serializers.CharField(required=True, error_messages={
@@ -47,8 +47,8 @@ class CaseSerializer(serializers.ModelSerializer):
     })
     class Meta:
         model = Products
-        fields = ["id", "name", "total_amount", "formfactor", "videCardLength", "picture_case", "price", "brand", "type"]
-
+        fields = ["id", "name", "total_amount", "formFactor", "videCardLength", "picture_case", "price", "brand", "type"]
+        read_only_fields = ["type"]
 class CoolerSerializer(serializers.ModelSerializer):
     brand = serializers.PrimaryKeyRelatedField(queryset=BrandNamesList.objects.filter(type="cooler"))
     name = serializers.CharField(required=True, error_messages={
@@ -58,7 +58,7 @@ class CoolerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Products
         fields = ["id", "name", "total_amount", "radiatorMaterial", "noiseLevel", "rotationalSpeed", "picture_cooler", "price", "brand", "type"]
-
+        read_only_fields = ["type"]
 class MotherboardSerializer(serializers.ModelSerializer):
     brand = serializers.PrimaryKeyRelatedField(queryset=BrandNamesList.objects.filter(type="motherboard"))
     name = serializers.CharField(required=True, error_messages={
@@ -69,9 +69,13 @@ class MotherboardSerializer(serializers.ModelSerializer):
         'required': 'The name field is required.',
         'blank': 'The name field cannot be blank.'
     })
+    ramSlots = serializers.IntegerField(required=True, error_messages={
+        'required': 'The ramSlots field is required.',
+        'blank': 'The ramSlots field cannot be blank.'
+    })
     class Meta:
         model = Products
-        fields = ["id", "name", "socket", "total_amount", "chipset", "formFactor", "picture_motherboard", "price", "brand", "type"]
+        fields = ["id", "name", "socket", "total_amount", "chipset", "formFactor", "ramSlots", "picture_motherboard", "price", "brand", "type"]
         read_only_fields = ["type"]
 
 class GpuSerializer(serializers.ModelSerializer):
@@ -92,7 +96,7 @@ class SsdSerializer(serializers.ModelSerializer):
     })
     class Meta:
         model = Products
-        fields = ["id", "name", "readspeed", "total_amount", "writeSpeed", "picture_ssd", "price", "brand", "type"]
+        fields = ["id", "name", "readSpeed", "total_amount", "writeSpeed", "picture_ssd", "price", "brand", "type"]
 class HddSerializer(serializers.ModelSerializer):
     brand = serializers.PrimaryKeyRelatedField(queryset=BrandNamesList.objects.filter(type="hdd"))
     name = serializers.CharField(required=True, error_messages={
@@ -101,8 +105,8 @@ class HddSerializer(serializers.ModelSerializer):
     })
     class Meta:
         model = Products
-        fields = ["id", "name", "readspeed", "total_amount", "writeSpeed", "picture_hdd", "price", "brand", "type"]
-
+        fields = ["id", "name", "readSpeed", "total_amount", "writeSpeed", "picture_hdd", "price", "brand", "type"]
+        read_only_fields = ["type"]
 class RamSerializer(serializers.ModelSerializer):
     brand = serializers.PrimaryKeyRelatedField(queryset=BrandNamesList.objects.filter(type="ram"))
     name = serializers.CharField(required=True, error_messages={
@@ -112,7 +116,7 @@ class RamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Products
         fields = ["id", "name", "speed", "total_amount", "picture_ram", "price", "brand", "type"]
-
+        read_only_fields = ["type"]
 class PsuSerializer(serializers.ModelSerializer):
     brand = serializers.PrimaryKeyRelatedField(queryset=BrandNamesList.objects.filter(type="psu"))
     name = serializers.CharField(required=True, error_messages={
@@ -122,19 +126,61 @@ class PsuSerializer(serializers.ModelSerializer):
     class Meta:
         model = Products
         fields = ["id", "name", "wattage", "total_amount", "picture_psu", "price", "brand", "type"]
+        read_only_fields = ["type"]
+
+class MouseSerializer(serializers.ModelSerializer):
+    brand = serializers.PrimaryKeyRelatedField(queryset=BrandNamesList.objects.filter(type="mouse"))
+    name = serializers.CharField(required=True, error_messages={
+        'required': 'The name field is required.',
+        'blank': 'The name field cannot be blank.'
+    })
+    class Meta:
+        model = Products
+        fields = ["id", "name", "dpi", "total_amount", "picture_mouse", "price", "brand", "type"]
+        read_only_fields = ["type"]
+
+class MonitorSerializer(serializers.ModelSerializer):
+    brand = serializers.PrimaryKeyRelatedField(queryset=BrandNamesList.objects.filter(type="monitor"))
+    name = serializers.CharField(required=True, error_messages={
+        'required': 'The name field is required.',
+        'blank': 'The name field cannot be blank.'
+    })
+    class Meta:
+        model = Products
+        fields = ["id", "name", "size", "resolution", "refreshRate", "total_amount", "picture_monitor", "price", "brand", "type"]
+        read_only_fields = ["type"]
+
+class KeyboardSerializer(serializers.ModelSerializer):
+    brand = serializers.PrimaryKeyRelatedField(queryset=BrandNamesList.objects.filter(type="keyboard"))
+    name = serializers.CharField(required=True, error_messages={
+        'required': 'The name field is required.',
+        'blank': 'The name field cannot be blank.'
+    })
+    class Meta:
+        model = Products
+        fields = ["id", "name", "switches", "total_amount", "picture_keyboard", "price", "brand", "type"]
+        read_only_fields = ["type"]
 
 
+class HeadsetSerializer(serializers.ModelSerializer):
+    brand = serializers.PrimaryKeyRelatedField(queryset=BrandNamesList.objects.filter(type="headset"))
+    name = serializers.CharField(required=True, error_messages={
+        'required': 'The name field is required.',
+        'blank': 'The name field cannot be blank.'
+    })
+    class Meta:
+        model = Products
+        fields = ["id", "name", "connectionInterface", "total_amount", "picture_headset", "price", "brand", "type"]
+        read_only_fields = ["type"]
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Products
         fields = '__all__'
 class PostOrderItemsSerializer(serializers.ModelSerializer):
-    products = serializers.PrimaryKeyRelatedField(queryset=Products.objects.all())
-    
+    products = serializers.PrimaryKeyRelatedField(queryset=Products.objects.all())    
     class Meta:
         model = OrderItems
         fields = ['id', 'quantity', 'products', 'orders']
-
     def validate_quantity(self, value):
         if value <= 0:
             raise serializers.ValidationError(
@@ -156,7 +202,7 @@ class GetOrderItemsSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItems
         fields = ['id', 'quantity', 'subtotal_price', 'product']
-
+        
     def get_product(self, obj):
         product = obj.products
         product_type = product.type.lower()
