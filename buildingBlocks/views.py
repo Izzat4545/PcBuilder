@@ -345,6 +345,7 @@ class OrderItemsCreate(generics.CreateAPIView):
     def perform_create(self, serializer):
         product = serializer.validated_data['products']
         order = serializer.validated_data['orders']
+        quantity = serializer.validated_data.get('quantity', 1)
         
         if product.type == 'cpu':
             existing_motherboard = OrderItems.objects.filter(orders=order, products__type='motherboard').first()
@@ -352,10 +353,19 @@ class OrderItemsCreate(generics.CreateAPIView):
                 raise ValidationError('Selected CPU is not compatible with the existing motherboard in the order.')
 
         if product.type == 'motherboard':
+            total_ram_sticks = OrderItems.objects.filter(orders=order, products__type='ram').aggregate(total=models.Sum('quantity'))['total'] or 0
             existing_cpu = OrderItems.objects.filter(orders=order, products__type='cpu').first()
             if existing_cpu and existing_cpu.products.socket != product.socket:
                 raise ValidationError('Selected motherboard is not compatible with the existing CPU in the order.')
+            if product.ramSlots < total_ram_sticks:
+                raise ValidationError('The selected motherboard does not have enough RAM slots for the current RAM configuration.')
 
+        if product.type == 'ram':
+            # Check if a motherboard exists and if RAM slots are sufficient
+            existing_motherboard = OrderItems.objects.filter(orders=order, products__type='motherboard').first()
+            if existing_motherboard:
+                if existing_motherboard.products.ramSlots < quantity:
+                    raise ValidationError('The selected motherboard cannot support the number of RAM sticks.')
         serializer.save()
 class OrderItemEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = OrderItems.objects.all()
@@ -376,6 +386,10 @@ class OrderItemEdit(generics.RetrieveUpdateDestroyAPIView):
             if type_name in QUANTITY_LIMITS and quantity > QUANTITY_LIMITS[type_name]:
                 raise ValidationError(f"The maximum quantity allowed for {type_name.upper()} is {QUANTITY_LIMITS[type_name]}.")
             
+            if type_name == 'ram':
+                existing_motherboard = OrderItems.objects.filter(orders=instance.orders, products__type='motherboard').first()
+                if existing_motherboard and existing_motherboard.products.ramSlots < quantity:
+                    raise ValidationError('The selected motherboard cannot support the number of RAM sticks.')
             instance.quantity = quantity
             instance.save()
 
