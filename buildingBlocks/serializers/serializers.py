@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from .models import *
-from .config.product_config import QUANTITY_LIMITS
+from buildingBlocks.models import *
+from ..config.product_config import QUANTITY_LIMITS
 
 
 class CpuSerializer(serializers.ModelSerializer):
@@ -26,7 +26,7 @@ class OsSerializer(serializers.ModelSerializer):
     })
     class Meta:
         model = Products
-        fields = ["id", "name", "total_amount", "socket", "price", "brand", "type"]
+        fields = ["id", "name", "total_amount", "price", "brand", "type"]
         read_only_fields = ["type"]
 
 class WifiSerializer(serializers.ModelSerializer):
@@ -37,7 +37,7 @@ class WifiSerializer(serializers.ModelSerializer):
     })
     class Meta:
         model = Products
-        fields = ["id", "name", "total_amount", "socket", "wirelessStandart", "picture_wifi", "price", "numberOfAntennas", "security", "brand", "type"]
+        fields = ["id", "name", "total_amount", "wirelessStandart", "picture_wifi", "price", "numberOfAntennas", "security", "brand", "type"]
         read_only_fields = ["type"]
 class CaseSerializer(serializers.ModelSerializer):
     brand = serializers.PrimaryKeyRelatedField(queryset=BrandNamesList.objects.filter(type="case"))
@@ -97,6 +97,8 @@ class SsdSerializer(serializers.ModelSerializer):
     class Meta:
         model = Products
         fields = ["id", "name", "readSpeed", "total_amount", "writeSpeed", "picture_ssd", "price", "brand", "type"]
+        read_only_fields = ["type"]
+
 class HddSerializer(serializers.ModelSerializer):
     brand = serializers.PrimaryKeyRelatedField(queryset=BrandNamesList.objects.filter(type="hdd"))
     name = serializers.CharField(required=True, error_messages={

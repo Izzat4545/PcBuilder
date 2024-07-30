@@ -1,10 +1,11 @@
 from rest_framework import generics, response,status,permissions
 from .models import  *
-from .serializers import *
+from .serializers.serializers import *
 from .customPermission import IsAdminOrReadOnly
 from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.parsers import FormParser, MultiPartParser
+from .serializers.updateSerializers import *
 
 class CpuView(generics.ListCreateAPIView):
     serializer_class = CpuSerializer
@@ -22,7 +23,7 @@ class CpuView(generics.ListCreateAPIView):
 
 class CpuViewEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = Products.objects.filter(type='cpu')
-    serializer_class = CpuSerializer
+    serializer_class = CpuEditSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
     parser_classes = [FormParser, MultiPartParser]
@@ -44,7 +45,7 @@ class GpuView(generics.ListCreateAPIView):
         serializer.save(type='gpu')
 class GpuViewEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = Products.objects.filter(type='gpu')
-    serializer_class = GpuSerializer
+    serializer_class = GpuEditSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
     parser_classes = [FormParser, MultiPartParser]
@@ -65,7 +66,7 @@ class MotherboardView(generics.ListCreateAPIView):
         serializer.save(type='motherboard')
 
 class MotherboardEdit(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = MotherboardSerializer
+    serializer_class = MotherboardEditSerializer
     queryset = Products.objects.filter(type='motherboard')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
@@ -88,7 +89,7 @@ class OsView(generics.ListCreateAPIView):
         serializer.save(type='os')
 
 class OsEdit(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = OsSerializer
+    serializer_class = OsEditSerializer
     queryset = Products.objects.filter(type='os')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
@@ -111,7 +112,7 @@ class WifiView(generics.ListCreateAPIView):
         serializer.save(type='wifi')
 
 class WifiEdit(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = WifiSerializer
+    serializer_class = WifiEditSerializer
     queryset = Products.objects.filter(type='wifi')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
@@ -134,7 +135,7 @@ class CaseView(generics.ListCreateAPIView):
         serializer.save(type='case')
 
 class CaseEdit(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = CaseSerializer
+    serializer_class = CaseEditSerializer
     queryset = Products.objects.filter(type='case')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
@@ -157,7 +158,7 @@ class CoolerView(generics.ListCreateAPIView):
         serializer.save(type='case')
 
 class CoolerEdit(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = CoolerSerializer
+    serializer_class = CoolerEditSerializer
     queryset = Products.objects.filter(type='cooler')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
@@ -180,7 +181,7 @@ class SsdView(generics.ListCreateAPIView):
         serializer.save(type='ssd')
 
 class SsdEdit(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = SsdSerializer
+    serializer_class = SsdEditSerializer
     queryset = Products.objects.filter(type='ssd')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
@@ -203,7 +204,7 @@ class HddView(generics.ListCreateAPIView):
         serializer.save(type='ssd')
 
 class HddEdit(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = HddSerializer
+    serializer_class = HddEditSerializer
     queryset = Products.objects.filter(type='hdd')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
@@ -226,7 +227,7 @@ class RamView(generics.ListCreateAPIView):
         serializer.save(type='ram')
 
 class RamEdit(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = RamSerializer
+    serializer_class = RamEditSerializer
     queryset = Products.objects.filter(type='ram')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
@@ -249,7 +250,7 @@ class PsuView(generics.ListCreateAPIView):
         serializer.save(type='psu')
 
 class PsuEdit(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = PsuSerializer
+    serializer_class = PsuEditSerializer
     queryset = Products.objects.filter(type='psu')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
@@ -272,7 +273,7 @@ class MouseView(generics.ListCreateAPIView):
         serializer.save(type='mouse')
 
 class MouseEdit(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = MouseSerializer
+    serializer_class = MouseEditSerializer
     queryset = Products.objects.filter(type='mouse')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
@@ -295,7 +296,7 @@ class MonitorView(generics.ListCreateAPIView):
         serializer.save(type='monitor')
 
 class MonitorEdit(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = MonitorSerializer
+    serializer_class = MonitorEditSerializer
     queryset = Products.objects.filter(type='monitor')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
@@ -317,7 +318,7 @@ class KeyboardView(generics.ListCreateAPIView):
         serializer.save(type='keyboard')
 
 class KeyboardEdit(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = KeyboardSerializer
+    serializer_class = KeyboardEditSerializer
     queryset = Products.objects.filter(type='keyboard')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
@@ -340,7 +341,7 @@ class HeadsetView(generics.ListCreateAPIView):
         serializer.save(type='keyboard')
 
 class HeadsetEdit(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = HeadsetSerializer
+    serializer_class = HeadsetEditSerializer
     queryset = Products.objects.filter(type='headset')
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
@@ -365,8 +366,9 @@ class BrandNamesListView(generics.ListCreateAPIView):
 
 class BrandNamesDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = BrandNamesList.objects.all()
-    serializer_class = BrandNamesListSerializer
+    serializer_class = BrandNamesEditListSerializer
     authentication_classes = [JWTAuthentication]
+    parser_classes = [FormParser, MultiPartParser]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
 
 class OrderItemsCreate(generics.CreateAPIView):
