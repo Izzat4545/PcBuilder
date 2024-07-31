@@ -13,10 +13,17 @@ class CpuSerializer(serializers.ModelSerializer):
         'required': 'The socket field is required.',
         'blank': 'The socket field cannot be blank.'
     })
+    isSelected = serializers.SerializerMethodField()
     class Meta:
         model = Products
-        fields = ["id", "total_amount", "name", "socket", "numberOfCores", "price", "brand", "picture_cpu", "type"]
+        fields = ["id", "total_amount", "name", "socket", "numberOfCores", "price", "brand", "picture_cpu", "isSelected", "type"]
         read_only_fields = ["type"]
+    
+    def get_isSelected(self, obj):
+        order_id = self.context.get('orderId')
+        if order_id:
+            return OrderItems.objects.filter(orderId=order_id, products=obj).exists()
+        return False
 
 class OsSerializer(serializers.ModelSerializer):
     brand = serializers.PrimaryKeyRelatedField(queryset=BrandNamesList.objects.filter(type="os"))
@@ -184,17 +191,24 @@ class PostOrderItemsSerializer(serializers.ModelSerializer):
         'required': 'The orderId field is required.',
         'blank': 'The orderId field cannot be blank.'
     })  
+
     class Meta:
         model = OrderItems
         fields = ['id', 'quantity', 'products', 'orderId']
+
+    def validate_orderId(self, value):
+        try:
+            order = Orders.objects.get(id=value)
+        except Orders.DoesNotExist:
+            raise serializers.ValidationError("Order with this ID does not exist.")
+        return order
+
     def validate_quantity(self, value):
         if value <= 0:
-            raise serializers.ValidationError(
-                f"The maximum quantity allowed for {type_name.upper()} is {QUANTITY_LIMITS[type_name]}."
-            )
-        product = self.instance.products if self.instance else Products.objects.get(id=self.initial_data['products'])
+            raise serializers.ValidationError("Quantity must be greater than zero.")
+        product = Products.objects.get(id=self.initial_data['products'])
         type_name = product.type.lower()
-        
+
         if type_name in QUANTITY_LIMITS and value > QUANTITY_LIMITS[type_name]:
             raise serializers.ValidationError(
                 f"The maximum quantity allowed for {type_name.upper()} is {QUANTITY_LIMITS[type_name]}."

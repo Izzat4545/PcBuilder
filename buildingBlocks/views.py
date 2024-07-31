@@ -18,6 +18,13 @@ class CpuView(generics.ListCreateAPIView):
             return Products.objects.filter(brand=brand, type='cpu')
         else:
             return Products.objects.filter(type='cpu')
+        
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        order_id = self.request.query_params.get('orderId')
+        if order_id:
+            context['orderId'] = order_id
+        return context
     def perform_create(self, serializer):
         serializer.save(type='cpu')
 
@@ -379,28 +386,27 @@ class OrderItemsCreate(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         product = serializer.validated_data['products']
-        order = serializer.validated_data['orders']
+        order = serializer.validated_data['orderId'] 
         quantity = serializer.validated_data.get('quantity', 1)
-        
+
         if product.type == 'cpu':
-            existing_motherboard = OrderItems.objects.filter(orders=order, products__type='motherboard').first()
+            existing_motherboard = OrderItems.objects.filter(orderId=order, products__type='motherboard').first()
             if existing_motherboard and existing_motherboard.products.socket != product.socket:
                 raise ValidationError('Selected CPU is not compatible with the existing motherboard in the order.')
 
         if product.type == 'motherboard':
-            total_ram_sticks = OrderItems.objects.filter(orders=order, products__type='ram').aggregate(total=models.Sum('quantity'))['total'] or 0
-            existing_cpu = OrderItems.objects.filter(orders=order, products__type='cpu').first()
+            total_ram_sticks = OrderItems.objects.filter(orderId=order, products__type='ram').aggregate(total=models.Sum('quantity'))['total'] or 0
+            existing_cpu = OrderItems.objects.filter(orderId=order, products__type='cpu').first()
             if existing_cpu and existing_cpu.products.socket != product.socket:
                 raise ValidationError('Selected motherboard is not compatible with the existing CPU in the order.')
             if product.ramSlots < total_ram_sticks:
                 raise ValidationError('The selected motherboard does not have enough RAM slots for the current RAM configuration.')
 
         if product.type == 'ram':
-            # Check if a motherboard exists and if RAM slots are sufficient
-            existing_motherboard = OrderItems.objects.filter(orders=order, products__type='motherboard').first()
-            if existing_motherboard:
-                if existing_motherboard.products.ramSlots < quantity:
-                    raise ValidationError('The selected motherboard cannot support the number of RAM sticks.')
+            existing_motherboard = OrderItems.objects.filter(orderId=order, products__type='motherboard').first()
+            if existing_motherboard and existing_motherboard.products.ramSlots < quantity:
+                raise ValidationError('The selected motherboard cannot support the number of RAM sticks.')
+
         serializer.save()
 class OrderItemEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = OrderItems.objects.all()
