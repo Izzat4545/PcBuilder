@@ -129,6 +129,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = '/home/host5189/api.devboi.site/static'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = '/home/host5189/api.devboi.site/media'
 
 # Default primary key field type
