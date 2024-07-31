@@ -179,10 +179,14 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Products
         fields = '__all__'
 class PostOrderItemsSerializer(serializers.ModelSerializer):
-    products = serializers.PrimaryKeyRelatedField(queryset=Products.objects.all())    
+    products = serializers.PrimaryKeyRelatedField(queryset=Products.objects.all())
+    orderId = serializers.CharField(required=True, error_messages={
+        'required': 'The orderId field is required.',
+        'blank': 'The orderId field cannot be blank.'
+    })  
     class Meta:
         model = OrderItems
-        fields = ['id', 'quantity', 'products', 'orders']
+        fields = ['id', 'quantity', 'products', 'orderId']
     def validate_quantity(self, value):
         if value <= 0:
             raise serializers.ValidationError(
@@ -234,7 +238,8 @@ class GetOrderSerializer(serializers.ModelSerializer):
     total_price = serializers.SerializerMethodField()
     class Meta:
         model = Orders
-        fields = ["id", "total_price", "components"]
+        fields = ["id", "total_price", 'username', 'phoneNumber', "created_at", "components"]
+        read_only_fields = ["id"]
 
     def get_total_price(self, obj):
         total = 0
@@ -245,7 +250,8 @@ class GetOrderSerializer(serializers.ModelSerializer):
 class PostOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Orders
-        fields = ["id"]
+        fields = ["id", 'username', 'phoneNumber']
+
 class BrandNamesListSerializer(serializers.ModelSerializer):
     class Meta:
         model = BrandNamesList

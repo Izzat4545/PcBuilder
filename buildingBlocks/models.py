@@ -60,12 +60,14 @@ class Products(models.Model):
         return "{}".format(self.name)
 class Orders(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
+    username = models.CharField(max_length=50, null=True, blank=True)
+    phoneNumber = models.CharField(max_length=13, null=True, blank=True)
 
     def __str__(self):
         return "{}".format(self.id)
-    
+
 class OrderItems(models.Model):
-    orders = models.ForeignKey(Orders, on_delete=models.CASCADE, related_name="components", null=True, blank=True)
+    orderId = models.ForeignKey(Orders, on_delete=models.CASCADE, related_name="components", null=True, blank=True)
     products = models.ForeignKey(Products, on_delete=models.PROTECT, related_name="orderItems", null=True, blank=True)
     quantity = models.IntegerField(default=1)
 

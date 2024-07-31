@@ -173,3 +173,9 @@ class BrandNamesEditListSerializer(serializers.ModelSerializer):
     class Meta:
         model = BrandNamesList
         fields = ["brandName", "type"]
+
+
+class EditOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Orders
+        fields = ['username', 'phoneNumber']

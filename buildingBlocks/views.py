@@ -1,4 +1,4 @@
-from rest_framework import generics, response,status,permissions
+from rest_framework import generics, response,status,permissions, views
 from .models import  *
 from .serializers.serializers import *
 from .customPermission import IsAdminOrReadOnly
@@ -349,6 +349,7 @@ class HeadsetEdit(generics.RetrieveUpdateDestroyAPIView):
 class OrderAdd(generics.CreateAPIView):
     queryset = Orders.objects.all()
     serializer_class = PostOrderSerializer
+    parser_classes = [FormParser, MultiPartParser]
 
 class OrderView(generics.ListAPIView):
     queryset = Orders.objects.all()
@@ -356,7 +357,7 @@ class OrderView(generics.ListAPIView):
 
 class OrderEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = Orders.objects.all()
-    serializer_class = GetOrderSerializer
+    serializer_class = EditOrderSerializer
 
 class BrandNamesListView(generics.ListCreateAPIView):
     queryset = BrandNamesList.objects.all()
@@ -374,6 +375,7 @@ class BrandNamesDetailView(generics.RetrieveUpdateDestroyAPIView):
 class OrderItemsCreate(generics.CreateAPIView):
     queryset = OrderItems.objects.all()
     serializer_class = PostOrderItemsSerializer
+    parser_classes = [FormParser, MultiPartParser]
 
     def perform_create(self, serializer):
         product = serializer.validated_data['products']
