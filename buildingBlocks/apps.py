@@ -4,3 +4,6 @@ from django.apps import AppConfig
 class BuildingblocksConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'buildingBlocks'
+    
+    def ready(self):
+        import buildingBlocks.signals
