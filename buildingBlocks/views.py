@@ -364,8 +364,10 @@ class OrderView(generics.ListAPIView):
 
 class OrderEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = Orders.objects.all()
-    serializer_class = EditOrderSerializer
-
+    def get_serializer_class(self):
+        if self.request.method in ['PUT', 'PATCH']:
+            return EditOrderSerializer
+        return GetOrderSerializer
 class BrandNamesListView(generics.ListCreateAPIView):
     queryset = BrandNamesList.objects.all()
     serializer_class = BrandNamesListSerializer

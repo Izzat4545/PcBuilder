@@ -1,6 +1,6 @@
 from django.db import models
 from .config import product_config
-
+import uuid
 class BrandNamesList(models.Model):
     brandName = models.CharField(max_length=255)
     picture = models.ImageField(upload_to='brand/', blank=True, default=None)
@@ -59,6 +59,7 @@ class Products(models.Model):
     def __str__(self):
         return "{}".format(self.name)
 class Orders(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     username = models.CharField(max_length=50, null=True, blank=True)
     phoneNumber = models.CharField(max_length=13, null=True, blank=True)
