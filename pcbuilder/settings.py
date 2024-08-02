@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-)$jrys$ud_9jm4))f*z_2n!wqr@i*t*6s-=(!8tpf3_!s0dnal
 DEBUG = False
 
 ALLOWED_HOSTS = ["api.devboi.site"]
-# ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = [
 
 
 # Application definition
