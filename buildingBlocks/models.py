@@ -9,6 +9,8 @@ class BrandNamesList(models.Model):
 
     def __str__(self):
         return self.brandName
+    class Meta:
+        verbose_name_plural = "Brand Names List"
 
 class Products(models.Model):
     total_amount = models.IntegerField(default=1)
@@ -58,17 +60,31 @@ class Products(models.Model):
 
     def __str__(self):
         return "{}".format(self.name)
+    
+    class Meta:
+        verbose_name_plural = "Products"
 class Orders(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     username = models.CharField(max_length=50, null=True, blank=True)
     phoneNumber = models.CharField(max_length=13, null=True, blank=True)
 
+    def total_price(self):
+        total = 0
+        for item in self.components.all():
+            total += item.quantity * item.products.price
+        return total
     def __str__(self):
         return "{}".format(self.id)
+    
+    class Meta:
+        verbose_name_plural = "Orders"
 
 class OrderItems(models.Model):
     orderId = models.ForeignKey(Orders, on_delete=models.CASCADE, related_name="components", null=True, blank=True)
     products = models.ForeignKey(Products, on_delete=models.PROTECT, related_name="orderItems", null=True, blank=True)
     quantity = models.IntegerField(default=1)
+
+    def __str__(self):
+        return f"Quantity: {self.quantity}x, Name: {self.products.name}, Price: ${self.products.price}"
 
